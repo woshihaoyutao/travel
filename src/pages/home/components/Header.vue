@@ -7,15 +7,22 @@
         <span class="iconfont">&#xe60e;</span>
         输入城市/景点/游玩主题
       </div>
+      <router-link to="/city">
       <div class="header-right">
-        <span class="iconfont arrow-icon">城市&#xe600;</span>
+        {{ this.city }}
+        <span class="iconfont arrow-icon">&#xe600;</span>
       </div>
+    </router-link>
     </div>
   </template>
   
  <script>
+ import {mapState} from 'vuex'
   export default {
     name: "HomeHeader",
+    computed: {
+    ...mapState(['city'])
+  }
   };
   
   </script>
@@ -47,6 +54,7 @@
           width 1.24rem
           float:right
           text-align:center
+          color:#fff
           .arrow-icon
               font-size:.24rem
   </style>

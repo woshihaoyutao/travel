@@ -1,35 +1,74 @@
 <template>
-    <div>
-      <home-header></home-header>
-      <home-swiper></home-swiper>
-      <home-icons></home-icons>
-      <home-recommend></home-recommend>
-      <home-weekend></home-weekend>
-    </div>
-  </template>
-  
-  <script>
-  import HomeHeader from "./components/Header.vue";
-  import HomeSwiper from './components/Swiper.vue'
-  import HomeIcons from './components/Icons.vue'
-  import HomeRecommend from './components/Recommend.vue'
-  import HomeWeekend from './components/Weekend.vue'
-  
-  export default {
-    name: "Home",
-    components: {
-      HomeHeader,
-      HomeSwiper,
-      HomeIcons,
-      HomeRecommend,
-      HomeWeekend
+  <div>
+    <home-header :city="city"></home-header>
+    <home-swiper :list="swiperList"></home-swiper>
+    <home-icons :list="iconList"></home-icons>
+    <home-recommend :list="recommendList"></home-recommend>
+    <home-weekend :list="weekendList"></home-weekend>
+  </div>
+</template>
+
+<script>
+import HomeHeader from "./components/Header.vue";
+import HomeSwiper from "./components/Swiper.vue";
+import HomeIcons from "./components/Icons.vue";
+import HomeRecommend from "./components/Recommend.vue";
+import HomeWeekend from "./components/Weekend.vue";
+import axios from "axios";
+// import { mapState } from "vuex";
+
+export default {
+  name: "Home",
+  components: {
+    HomeHeader,
+    HomeSwiper,
+    HomeIcons,
+    HomeRecommend,
+    HomeWeekend
+  },
+  data() {
+    return {
+      lastCity: "",
+      swiperList: [],
+      iconList: [],
+      recommendList: [],
+      weekendList: []
+    };
+  },
+  computed: {
+    // ...mapState(["city"]),
+    city:{
+        get(){
+            return this.$store.state.city
+        },
+        set(){}
+    }
+  },
+  methods: {
+    getHomeInfo() {
+      axios.get("/api/index.json?city="+this.city).then(this.getHomeInfoSucc);
     },
-  };
-  </script>
-  
-  <style scoped>
-  .home {
-    font-size: 50px;
+    getHomeInfoSucc(res) {
+      res = res.data;
+      if (res.ret && res.data) {
+        const data = res.data;
+        this.city = data.city;
+        this.swiperList = data.swiperList;
+        this.iconList = data.iconList;
+        this.recommendList = data.recommendList;
+        this.weekendList = data.weekendList;
+      }
+    }
+  },
+
+  mounted() {
+    this.getHomeInfo();
   }
-  </style>
-  
+};
+</script>
+
+<style scoped>
+.home {
+  font-size: 50px;
+}
+</style>
